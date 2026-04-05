@@ -35,7 +35,7 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: pip install --upgrade pip setuptools wheel 
-      - run: pip install -r requirements.txt aiosqlite
+      - run: pip install --no-build-isolation -r requirements.txt aiosqlite
       - run: pip install ruff && ruff check app/ workers/ drift/ monitoring/ tests/
       - name: Run tests with coverage
         env:
