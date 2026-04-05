@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "integration: marks tests that call real external services (deselect with -m 'not integration')",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
