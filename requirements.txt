@@ -1,3 +1,7 @@
+# Build dependencies (required for packages like hdbscan)
+cython==0.29.36
+numpy==1.26.4
+
 # Web framework
 fastapi==0.111.0
 uvicorn[standard]==0.30.1
@@ -23,7 +27,6 @@ langchain-openai==0.1.14
 sentence-transformers==3.0.1
 umap-learn==0.5.6
 hdbscan==0.8.11
-numpy==1.26.4
 scikit-learn==1.5.0
 
 # MLflow
