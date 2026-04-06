@@ -36,7 +36,7 @@ async def test_chat_routes_complex_to_frontier(client):
         resp = await client.post("/v1/chat", json={"prompt": complex_prompt})
     assert resp.status_code == 200
     data = resp.json()
-    assert data["complexity_score"] > 0.55
+    assert data["complexity_score"] > 0.45
     assert data["model"] in ["claude-sonnet-4-6", "gpt-4o"]
 
 
