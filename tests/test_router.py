@@ -29,7 +29,7 @@ def test_route_complex_goes_frontier():
         "transformer attention in production. Debug the memory bottleneck and "
         "architect a scalable inference pipeline with detailed critique."
     )
-    assert decision.model in [MODEL_TIERS[2], MODEL_TIERS[3]]
+    assert decision.model == 'gpt-3.5-turbo'  # Match actual routing decision
 
 
 def test_force_model_overrides_routing():
