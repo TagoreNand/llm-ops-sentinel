@@ -34,9 +34,12 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - run: sudo apt-get update && sudo apt-get install -y python3.12-dev
+      - run: sudo apt-get update 
+      - run: sudo apt-get install -y python3.11-dev gcc g++ build-essential
+      - run: sudo apt-get install -y libpython3.11-dev  # Critical for hdbscan compilation
       - run: pip install --upgrade pip setuptools wheel 
-      - run: pip install cython==0.29.36 numpy==1.26.4
+      - run: pip install cython==0.29.36 numpy==1.24.3
+      - run: pip install hdbscan==0.8.33  # Older version that works with Python 3.1
       - run: pip install --no-build-isolation -r requirements.txt aiosqlite
       - run: pip install ruff && ruff check app/ workers/ drift/ monitoring/ tests/
       - name: Run tests with coverage
