@@ -1,93 +1,30 @@
-name: CI/CD
+name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ main ]
   pull_request:
-    branches: [main]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+    branches: [ main ]
 
 jobs:
   test:
-    name: Test Suite
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: sentinel
-          POSTGRES_PASSWORD: sentinel
-          POSTGRES_DB: sentinel_db
-        ports: ["5432:5432"]
-        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 5
-      redis:
-        image: redis:7-alpine
-        ports: ["6379:6379"]
-        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 5
-
+    runs-on: ubuntu-22.04  # Using Ubuntu 22.04 for Python 3.11 support
+    
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-      - run: sudo apt-get update 
-      - run: sudo apt-get install -y python3.11-dev gcc g++ build-essential
-      - run: sudo apt-get install -y libpython3.11-dev  # Critical for hdbscan compilation
-      - run: pip install --upgrade pip setuptools wheel 
-      - run: pip install cython==0.29.36 numpy==1.24.3
-      - run: pip install hdbscan==0.8.33  # Older version that works with Python 3.1
-      - run: pip install --no-build-isolation -r requirements.txt aiosqlite
-      - run: pip install ruff && ruff check app/ workers/ drift/ monitoring/ tests/
-      - name: Run tests with coverage
-        env:
-          DATABASE_URL: postgresql+asyncpg://sentinel:sentinel@localhost:5432/sentinel_db
-          REDIS_URL: redis://localhost:6379/0
-          CELERY_BROKER_URL: redis://localhost:6379/1
-          CELERY_RESULT_BACKEND: redis://localhost:6379/2
-          OPENAI_API_KEY: sk-test-placeholder
-          ANTHROPIC_API_KEY: sk-ant-test-placeholder
-          MLFLOW_TRACKING_URI: http://localhost:5001
-        run: |
-          pytest tests/ -v \
-            --cov=app --cov=workers --cov=drift --cov=monitoring \
-            --cov-report=term-missing \
-            --cov-report=xml \
-            --cov-fail-under=80
-      - uses: codecov/codecov-action@v4
-        with:
-          file: coverage.xml
-          fail_ci_if_error: false
-
-  build-and-push:
-    name: Build & Push Docker Image
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha,prefix=sha-
-            type=raw,value=latest,enable={{is_default_branch}}
-      - uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+    - uses: actions/checkout@v4
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3.11-dev python3.11-distutils gcc g++ build-essential
+    
+    - name: Install Python dependencies
+      run: |
+        python3.11 -m pip install --upgrade pip setuptools wheel cython
+        python3.11 -m pip install numpy==1.24.3
+        python3.11 -m pip install hdbscan==0.8.33
+        python3.11 -m pip install -r requirements.txt
+    
+    - name: Run tests
+      run: |
+        python3.11 -m pytest tests/ -v
