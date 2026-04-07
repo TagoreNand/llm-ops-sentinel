@@ -382,7 +382,7 @@ To keep the project description accurate, it helps to separate the current imple
 
 ---
 
-## Why this project is resume-worthy
+## How is this project well-rounded
 
 This project demonstrates more than LLM API usage. It shows understanding of:
 
