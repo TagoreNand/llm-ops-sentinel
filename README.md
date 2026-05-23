@@ -395,7 +395,6 @@ This project demonstrates more than LLM API usage. It shows understanding of:
 - Dockerized local platform engineering
 - MLOps-style experiment tracking
 
-That makes it especially useful as a portfolio project for roles in AI/ML engineering, LLM platform engineering, MLOps, or applied AI infrastructure.
 
 ---
 
@@ -414,4 +413,4 @@ That makes it especially useful as a portfolio project for roles in AI/ML engine
 
 ## License
 
-Add your preferred license before publishing broadly, such as MIT or Apache-2.0.
+MIT
