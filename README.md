@@ -413,4 +413,4 @@ This project demonstrates more than LLM API usage. It shows understanding of:
 
 ## License
 
-MIT
+MIT License
