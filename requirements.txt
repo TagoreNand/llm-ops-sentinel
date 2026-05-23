@@ -1,7 +1,7 @@
 torch>=2.0.0,<2.2.0
 torchvision>=0.15.0
 torchaudio>=2.0.0
-transformers>=4.30.0
+transformers>=4.35.0
 
 # Build dependencies (required for packages like hdbscan)
 cython==0.29.36
